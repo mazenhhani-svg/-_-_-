@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة تسجيل غياب مدارس دمياط</title>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 520px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: max-width 0.3s ease;
+        }
+
+        .container.wide {
+            max-width: 800px;
+        }
+
+        /* Tabs Navigation */
+        .tabs-header {
+            display: flex;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text-muted);
+            border-radius: 9px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: #ffffff;
+            color: var(--primary-color);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header .icon-wrapper {
+            width: 65px;
+            height: 65px;
+            background: #eff6ff;
+            color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 26px;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .header p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 11px 42px 11px 15px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
+            background-color: #fff;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        select.form-control {
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover { background-color: var(--primary-hover); }
+        .btn:active { transform: scale(0.98); }
+
+        .btn-secondary {
+            background-color: #f1f5f9;
+            color: var(--text-main);
+        }
+        .btn-secondary:hover { background-color: #e2e8f0; }
+
+        .btn-whatsapp {
+            background-color: #25d366;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 600;
+        }
+        .btn-whatsapp:hover { background-color: #1ebc57; }
+
+        /* Admin Controls & Filters */
+        .admin-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-btn {
+            padding: 10px 15px;
+            border: 1.5px solid var(--border-color);
+            background: white;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active {
+            background: #fef2f2;
+            border-color: var(--danger-color);
+            color: var(--danger-color);
+        }
+
+        /* School List Cards */
+        .schools-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 480px;
+            overflow-y: auto;
+            padding-left: 5px;
+        }
+
+        .school-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .school-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .school-card-info h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 3px;
+        }
+
+        .school-card-info p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .badge {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .badge-success { background: #dcfce7; color: #15803d; }
+        .badge-danger { background: #fee2e2; color: #b91c1c; }
+
+        /* School Info Card */
+        .school-info-card {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .school-info-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+        .school-info-item:last-child { margin-bottom: 0; }
+        .school-info-item span:first-child { color: var(--text-muted); }
+        .school-info-item span:last-child { font-weight: 700; }
+
+        /* Stats Grid Modal */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .stat-box {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .stat-box .number {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .stat-box .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Modal styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal { transform: translateY(0); }
+
+        .modal-icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: #fef3c7;
+            color: #d97706;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin: 0 auto 12px;
+        }
+
+        .modal h3 { font-size: 17px; margin-bottom: 8px; }
+        .modal p { font-size: 13px; color: var(--text-muted); margin-bottom: 15px; }
+
+        .hidden { display: none !important; }
+
+        /* Spinner Loading */
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 3px solid #ffffff;
+            width: 18px;
+            height: 18px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Toast Notification Styling */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 50%;
+            transform: translateX(50%);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .toast {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 12px 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+            pointer-events: auto;
+            border-right: 5px solid var(--primary-color);
+        }
+
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.error { border-right-color: var(--danger-color); }
+        .toast.success { border-right-color: var(--success-color); }
+        .toast-icon { font-size: 18px; }
+        .toast.error .toast-icon { color: var(--danger-color); }
+        .toast.success .toast-icon { color: var(--success-color); }
+        .toast-message { font-size: 13px; font-weight: 600; color: var(--text-main); flex: 1; }
+    </style>
+</head>
+<body>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="container" id="mainContainer">
+        
+        <!-- Login Selection Tabs -->
+        <div id="loginTabsHeader" class="tabs-header">
+            <button class="tab-btn active" id="tabSchoolBtn" onclick="switchLoginTab('school')">دخول مدرسة</button>
+            <button class="tab-btn" id="tabAdminBtn" onclick="switchLoginTab('admin')">دخول أدمن</button>
+        </div>
+
+        <!-- Step 1-A: School Login Form -->
+        <div id="schoolLoginStep">
+            <div class="header">
+                <div class="icon-wrapper">
+                    <i class="fa-solid fa-school"></i>
+                </div>
+                <h1>منصة تسجيل الغياب</h1>
+                <p>اختر المدرسة وقم بإدخال كلمة المرور للمتابعة</p>
+            </div>
+
+            <form id="schoolLoginForm">
+                <div class="form-group">
+                    <label>المدرسة</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-building-columns"></i>
+                        <select id="schoolSelect" class="form-control" required>
+                            <option value="" disabled selected>جاري تحميل المدارس...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>الرقم السري</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-key"></i>
+                        <input type="password" id="passwordInput" class="form-control" placeholder="أدخل الرقم السري" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn">
+                    <span>دخول</span>
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Step 1-B: Admin Login Form -->
+        <div id="adminLoginStep" class="hidden">
+            <div class="header">
+                <div class="icon-wrapper" style="background: #fef3c7; color: #d97706;">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <h1>دخول المسؤولين (الأدمن)</h1>
+                <p>قم بإدخال اسم المستخدم وكلمة المرور الخاصة بالمشرف</p>
+            </div>
+
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label>اسم المستخدم</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" id="adminUsernameInput" class="form-control" placeholder="اسم المستخدم" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="adminPasswordInput" class="form-control" placeholder="كلمة المرور" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn" id="adminLoginSubmitBtn">
+                    <span id="adminLoginBtnText">دخول لوحة الأدمن</span>
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Step 2: School Attendance Entry Form -->
+        <div id="attendanceStep" class="hidden">
+            <div class="header">
+                <div class="icon-wrapper" style="background: #ecfdf5; color: var(--success-color);">
+                    <i class="fa-solid fa-clipboard-user"></i>
+                </div>
+                <h1>تسجيل الغياب اليومي</h1>
+                <p>قم بإدخال إجمالي عدد الطلاب الغائبين اليوم</p>
+            </div>
+
+            <div class="school-info-card">
+                <div class="school-info-item">
+                    <span>اسم المدرسة:</span>
+                    <span id="selectedSchoolName">-</span>
+                </div>
+                <div class="school-info-item">
+                    <span>عدد المقيدين:</span>
+                    <span id="selectedSchoolStudents">-</span>
+                </div>
+                <div class="school-info-item">
+                    <span>تاريخ اليوم:</span>
+                    <span id="currentDateDisplay">-</span>
+                </div>
+            </div>
+
+            <form id="attendanceForm">
+                <div class="form-group">
+                    <label>عدد الغياب الكلي</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-user-minus"></i>
+                        <input type="number" id="absentCountInput" class="form-control" min="0" placeholder="0" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn">
+                    <span>تأكيد الإرسال</span>
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Step 3: Admin Dashboard -->
+        <div id="adminDashboardStep" class="hidden">
+            <div class="header" style="text-align: right; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div>
+                    <h1 style="font-size: 18px;"><i class="fa-solid fa-chart-line" style="color: var(--primary-color);"></i> لوحة متابعة المدارس</h1>
+                    <p id="adminWelcomeText">أهلاً بك في نظام المتابعة اليومي</p>
+                </div>
+                <button class="btn btn-secondary" onclick="logoutAdmin()" style="width: auto; padding: 8px 14px; font-size: 12px;">
+                    <i class="fa-solid fa-right-from-bracket"></i> خروج
+                </button>
+            </div>
+
+            <div class="admin-toolbar">
+                <div class="search-box input-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="adminSearchInput" class="form-control" placeholder="ابحث باسم المدرسة أو الكود..." oninput="filterSchoolsList()">
+                </div>
+                <button id="unregisteredFilterBtn" class="filter-btn" onclick="toggleUnregisteredFilter()">
+                    <i class="fa-solid fa-filter"></i> المدارس الغير مسجلة فقط
+                </button>
+            </div>
+
+            <div class="schools-list" id="adminSchoolsList">
+                <!-- المدارس سيتم توليدها ديناميكياً هنا -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Attendance Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal">
+            <div class="modal-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3>تأكيد إرسال التقرير</h3>
+            <p id="modalText">هل أنت متأكد من تسجيل عدد (0) غائب؟</p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelBtn" type="button">تراجع</button>
+                <button class="btn" id="confirmSubmitBtn" type="button">
+                    <span id="submitBtnText">إرسال مؤكد</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- School Details Modal (Admin View) -->
+    <div class="modal-overlay" id="schoolDetailsModal">
+        <div class="modal" style="max-width: 480px; text-align: right;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                <h3 id="modalSchoolTitle" style="font-size: 16px; margin: 0; color: var(--primary-color);">تفاصيل المدرسة</h3>
+                <button onclick="closeSchoolDetailsModal()" style="border: none; background: transparent; font-size: 18px; cursor: pointer; color: var(--text-muted);">&times;</button>
+            </div>
+
+            <div class="school-info-card" style="margin-bottom: 15px;">
+                <div class="school-info-item">
+                    <span>كود المدرسة:</span>
+                    <span id="modalSchoolCode">-</span>
+                </div>
+                <div class="school-info-item">
+                    <span>إجمالي المقيدين:</span>
+                    <span id="modalSchoolStudents">-</span>
+                </div>
+                <div class="school-info-item">
+                    <span>رقم الهاتف:</span>
+                    <span id="modalSchoolPhone">-</span>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>اختر التاريخ لعرض التقرير:</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <input type="date" id="modalDatePicker" class="form-control" onchange="calculateSchoolStatsForDate()">
+                </div>
+            </div>
+
+            <div id="dateReportStatus" style="font-size: 12px; font-weight: 700; text-align: center; margin-bottom: 10px;"></div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="number" id="statAbsentCount">0</div>
+                    <div class="label">عدد الغائبين</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number" id="statPresentCount" style="color: var(--success-color);">0</div>
+                    <div class="label">عدد الحاضرين</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number" id="statAbsentRate" style="color: var(--danger-color);">0%</div>
+                    <div class="label">نسبة الغياب</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number" id="statPresentRate" style="color: var(--success-color);">0%</div>
+                    <div class="label">نسبة الحضور</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="closeSchoolDetailsModal()" style="width: 100%;">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyrNv-IshUUBYL5P4l-KODrRi4aEW4NxIjDXQBV78wC4X7NyaDLl1QXQTdRz2CHuH6l/exec";
+
+        let schoolsData = [];
+        let currentSchool = null;
+        let adminDashboardData = null;
+        let showOnlyUnregistered = false;
+        let selectedSchoolForModal = null;
+
+        function getTodayDateString() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function showToast(message, type = 'error') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const iconClass = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+            toast.innerHTML = `<i class="fa-solid ${iconClass} toast-icon"></i><div class="toast-message">${message}</div>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // Tab Switching
+        function switchLoginTab(type) {
+            document.getElementById('tabSchoolBtn').classList.toggle('active', type === 'school');
+            document.getElementById('tabAdminBtn').classList.toggle('active', type === 'admin');
+            document.getElementById('schoolLoginStep').classList.toggle('hidden', type !== 'school');
+            document.getElementById('adminLoginStep').classList.toggle('hidden', type !== 'admin');
+        }
+
+        // 1. Fetch School List for normal user
+        function fetchSchoolsJSONP() {
+            const script = document.createElement('script');
+            script.src = `${SCRIPT_URL}?action=getSchools&callback=handleSchoolsResponse`;
+            document.body.appendChild(script);
+        }
+
+        function handleSchoolsResponse(data) {
+            schoolsData = data;
+            const select = document.getElementById('schoolSelect');
+            select.innerHTML = '<option value="" disabled selected>اختر المدرسة من القائمة...</option>';
+            schoolsData.forEach(school => {
+                const option = document.createElement('option');
+                option.value = school.code;
+                option.textContent = school.name;
+                select.appendChild(option);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", fetchSchoolsJSONP);
+
+        // 2. Normal School Login Form Submit
+        document.getElementById('schoolLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const code = document.getElementById('schoolSelect').value;
+            const pass = document.getElementById('passwordInput').value.trim();
+
+            const school = schoolsData.find(s => s.code === code && String(s.pass) === String(pass));
+
+            if (school) {
+                currentSchool = school;
+                document.getElementById('selectedSchoolName').textContent = school.name;
+                document.getElementById('selectedSchoolStudents').textContent = school.totalStudents;
+                document.getElementById('currentDateDisplay').textContent = getTodayDateString();
+                
+                document.getElementById('loginTabsHeader').classList.add('hidden');
+                document.getElementById('schoolLoginStep').classList.add('hidden');
+                document.getElementById('attendanceStep').classList.remove('hidden');
+            } else {
+                showToast("الرقم السري غير صحيح، يرجى إعادة المحاولة.", "error");
+            }
+        });
+
+        // 3. Admin Login Form Submit
+        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('adminUsernameInput').value.trim();
+            const password = document.getElementById('adminPasswordInput').value.trim();
+            
+            const btnText = document.getElementById('adminLoginBtnText');
+            btnText.innerHTML = `<div class="spinner"></div>`;
+
+            const url = `${SCRIPT_URL}?action=adminLogin&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&callback=handleAdminLoginResponse`;
+            const script = document.createElement('script');
+            script.src = url;
+            document.body.appendChild(script);
+        });
+
+        function handleAdminLoginResponse(response) {
+            document.getElementById('adminLoginBtnText').textContent = "دخول لوحة الأدمن";
+            
+            if (response.status === 'success') {
+                showToast("تم تسجيل دخول الأدمن بنجاح!", "success");
+                document.getElementById('adminWelcomeText').textContent = `مرحباً ${response.user || 'المشرف'}`;
+                loadAdminDashboardData();
+            } else {
+                showToast(response.message || "بيانات الدخول غير صحيحة", "error");
+            }
+        }
+
+        // 4. Load Admin Dashboard Data
+        function loadAdminDashboardData() {
+            const url = `${SCRIPT_URL}?action=getAdminDashboardData&callback=handleAdminDashboardResponse`;
+            const script = document.createElement('script');
+            script.src = url;
+            document.body.appendChild(script);
+        }
+
+        function handleAdminDashboardResponse(response) {
+            if (response.status === 'success') {
+                adminDashboardData = response;
+                
+                // Show Dashboard Step
+                document.getElementById('loginTabsHeader').classList.add('hidden');
+                document.getElementById('adminLoginStep').classList.add('hidden');
+                document.getElementById('adminDashboardStep').classList.remove('hidden');
+                document.getElementById('mainContainer').classList.add('wide');
+
+                filterSchoolsList();
+            } else {
+                showToast("فشل جلب بيانات اللوحة: " + response.message, "error");
+            }
+        }
+
+        // Render Schools List in Admin View
+        function filterSchoolsList() {
+            if (!adminDashboardData) return;
+
+            const searchQuery = document.getElementById('adminSearchInput').value.trim().toLowerCase();
+            const container = document.getElementById('adminSchoolsList');
+            container.innerHTML = '';
+
+            const todayRecordedCodes = adminDashboardData.todayRecordedCodes || [];
+
+            const filtered = adminDashboardData.schools.filter(school => {
+                const matchesSearch = school.name.toLowerCase().includes(searchQuery) || school.code.toLowerCase().includes(searchQuery);
+                const isRegisteredToday = todayRecordedCodes.includes(school.code);
+                
+                if (showOnlyUnregistered) {
+                    return matchesSearch && !isRegisteredToday;
+                }
+                return matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div style="text-align:center; color:var(--text-muted); padding:30px; font-size:13px;">لا توجد مدارس مطابقة للبحث</div>`;
+                return;
+            }
+
+            filtered.forEach(school => {
+                const isRegistered = todayRecordedCodes.includes(school.code);
+                const card = document.createElement('div');
+                card.className = 'school-card';
+                card.onclick = () => openSchoolDetailsModal(school);
+
+                let phoneClean = school.phone ? String(school.phone).replace(/\D/g, '') : '';
+                if (phoneClean.startsWith('0')) phoneClean = '2' + phoneClean; // تحويل الرقم للصيغة الدولية مصر
+
+                let whatsappBtn = '';
+                if (phoneClean) {
+                    whatsappBtn = `
+                        <a href="https://wa.me/${phoneClean}" target="_blank" class="btn-whatsapp" onclick="event.stopPropagation();">
+                            <i class="fa-brands fa-whatsapp"></i> تواصل
+                        </a>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="school-card-info">
+                        <h4>${school.name}</h4>
+                        <p>الكود: ${school.code} | المقيدين: ${school.totalStudents}</p>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        ${isRegistered 
+                            ? `<span class="badge badge-success"><i class="fa-solid fa-circle-check"></i> مسجل</span>`
+                            : `<span class="badge badge-danger"><i class="fa-solid fa-circle-xmark"></i> لم يسجل اليوم</span>`}
+                        ${whatsappBtn}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function toggleUnregisteredFilter() {
+            showOnlyUnregistered = !showOnlyUnregistered;
+            const btn = document.getElementById('unregisteredFilterBtn');
+            btn.classList.toggle('active', showOnlyUnregistered);
+            filterSchoolsList();
+        }
+
+        // Open Modal Details for Admin
+        function openSchoolDetailsModal(school) {
+            selectedSchoolForModal = school;
+            document.getElementById('modalSchoolTitle').textContent = school.name;
+            document.getElementById('modalSchoolCode').textContent = school.code;
+            document.getElementById('modalSchoolStudents').textContent = school.totalStudents;
+            document.getElementById('modalSchoolPhone').textContent = school.phone || 'غير مسجل';
+
+            // Set Datepicker to today by default
+            document.getElementById('modalDatePicker').value = getTodayDateString();
+            calculateSchoolStatsForDate();
+
+            document.getElementById('schoolDetailsModal').classList.add('active');
+        }
+
+        function closeSchoolDetailsModal() {
+            document.getElementById('schoolDetailsModal').classList.remove('active');
+        }
+
+        // Calculate Stats for selected Date in Modal
+        function calculateSchoolStatsForDate() {
+            if (!selectedSchoolForModal || !adminDashboardData) return;
+
+            const selectedDate = document.getElementById('modalDatePicker').value;
+            const totalStudents = Number(selectedSchoolForModal.totalStudents) || 0;
+
+            // Search in attendanceRecords
+            const record = adminDashboardData.attendanceRecords.find(
+                r => r.code === selectedSchoolForModal.code && r.date === selectedDate
+            );
+
+            const statusEl = document.getElementById('dateReportStatus');
+
+            if (record) {
+                const absentCount = Number(record.absentCount) || 0;
+                const presentCount = Math.max(0, totalStudents - absentCount);
+                
+                const absentRate = totalStudents > 0 ? ((absentCount / totalStudents) * 100).toFixed(1) : 0;
+                const presentRate = totalStudents > 0 ? ((presentCount / totalStudents) * 100).toFixed(1) : 0;
+
+                document.getElementById('statAbsentCount').textContent = absentCount;
+                document.getElementById('statPresentCount').textContent = presentCount;
+                document.getElementById('statAbsentRate').textContent = `${absentRate}%`;
+                document.getElementById('statPresentRate').textContent = `${presentRate}%`;
+
+                statusEl.style.color = "var(--success-color)";
+                statusEl.textContent = `تم تسجيل التقرير لهذا اليوم (${selectedDate})`;
+            } else {
+                document.getElementById('statAbsentCount').textContent = "0";
+                document.getElementById('statPresentCount').textContent = totalStudents;
+                document.getElementById('statAbsentRate').textContent = "0%";
+                document.getElementById('statPresentRate').textContent = "100%";
+
+                statusEl.style.color = "var(--danger-color)";
+                statusEl.textContent = `لم يتم تسجيل غياب لهذا اليوم (${selectedDate})`;
+            }
+        }
+
+        function logoutAdmin() {
+            document.getElementById('adminDashboardStep').classList.add('hidden');
+            document.getElementById('mainContainer').classList.remove('wide');
+            document.getElementById('loginTabsHeader').classList.remove('hidden');
+            switchLoginTab('school');
+        }
+
+        // 5. Attendance Form Confirmation & Submit (Normal School)
+        document.getElementById('attendanceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const count = document.getElementById('absentCountInput').value;
+            const todayStr = getTodayDateString();
+            document.getElementById('modalText').textContent = `هل أنت متأكد من تسجيل عدد (${count}) غائب لمدرسة (${currentSchool.name}) بتاريخ (${todayStr})؟`;
+            document.getElementById('confirmModal').classList.add('active');
+        });
+
+        document.getElementById('cancelBtn').addEventListener('click', function() {
+            document.getElementById('confirmModal').classList.remove('active');
+        });
+
+        document.getElementById('confirmSubmitBtn').addEventListener('click', function() {
+            const count = document.getElementById('absentCountInput').value;
+            const submitBtnText = document.getElementById('submitBtnText');
+            
+            submitBtnText.innerHTML = `<div class="spinner"></div>`;
+            this.disabled = true;
+
+            const url = `${SCRIPT_URL}?action=addAttendance&code=${encodeURIComponent(currentSchool.code)}&name=${encodeURIComponent(currentSchool.name)}&absentCount=${encodeURIComponent(count)}&callback=handleAttendanceResponse`;
+            
+            const script = document.createElement('script');
+            script.src = url;
+            document.body.appendChild(script);
+        });
+
+        function handleAttendanceResponse(response) {
+            document.getElementById('confirmModal').classList.remove('active');
+            
+            if (response.status === 'success') {
+                showToast(response.message || "تم تسجيل الغياب بنجاح!", "success");
+                
+                document.getElementById('absentCountInput').value = '';
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('attendanceStep').classList.add('hidden');
+                document.getElementById('loginTabsHeader').classList.remove('hidden');
+                document.getElementById('schoolLoginStep').classList.remove('hidden');
+            } else {
+                showToast(response.message || "حدث خطأ أثناء التسجيل", "error");
+            }
+
+            document.getElementById('confirmSubmitBtn').disabled = false;
+            document.getElementById('submitBtnText').textContent = "إرسال مؤكد";
+        }
+    </script>
+</body>
+</html>
