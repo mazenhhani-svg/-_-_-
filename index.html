@@ -55,7 +55,7 @@
         }
 
         .container.wide {
-            max-width: 800px;
+            max-width: 850px;
         }
 
         /* Tabs Navigation */
@@ -76,7 +76,7 @@
             font-weight: 700;
             font-size: 14px;
             color: var(--text-muted);
-            border-radius: 9px;
+            border-radius: 99px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -202,6 +202,40 @@
             font-weight: 600;
         }
         .btn-whatsapp:hover { background-color: #1ebc57; }
+
+        /* Admin General Dashboard Summary Grid */
+        .admin-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .admin-summary-card {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 12px 10px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .admin-summary-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .admin-summary-card .title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .admin-summary-card .value {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
 
         /* Admin Controls & Filters */
         .admin-toolbar {
@@ -579,6 +613,30 @@
                 </button>
             </div>
 
+            <!-- Admin Overview Dashboard Cards -->
+            <div class="admin-summary-grid">
+                <div class="admin-summary-card">
+                    <div class="title"><i class="fa-solid fa-users" style="color: var(--primary-color);"></i> إجمالي المقيدين</div>
+                    <div class="value" id="dashTotalStudents">0</div>
+                </div>
+                <div class="admin-summary-card">
+                    <div class="title"><i class="fa-solid fa-user-check" style="color: var(--success-color);"></i> الحاضرين اليوم</div>
+                    <div class="value" id="dashTotalPresent" style="color: var(--success-color);">0</div>
+                </div>
+                <div class="admin-summary-card">
+                    <div class="title"><i class="fa-solid fa-user-xmark" style="color: var(--danger-color);"></i> الغائبين اليوم</div>
+                    <div class="value" id="dashTotalAbsent" style="color: var(--danger-color);">0</div>
+                </div>
+                <div class="admin-summary-card">
+                    <div class="title"><i class="fa-solid fa-chart-pie" style="color: var(--success-color);"></i> نسبة الحضور</div>
+                    <div class="value" id="dashPresentRate" style="color: var(--success-color);">0%</div>
+                </div>
+                <div class="admin-summary-card">
+                    <div class="title"><i class="fa-solid fa-chart-line-down" style="color: var(--danger-color);"></i> نسبة الغياب</div>
+                    <div class="value" id="dashAbsentRate" style="color: var(--danger-color);">0%</div>
+                </div>
+            </div>
+
             <div class="admin-toolbar">
                 <div class="search-box input-wrapper">
                     <i class="fa-solid fa-magnifying-glass"></i>
@@ -798,10 +856,42 @@
                 document.getElementById('adminDashboardStep').classList.remove('hidden');
                 document.getElementById('mainContainer').classList.add('wide');
 
+                updateAdminGeneralSummary();
                 filterSchoolsList();
             } else {
                 showToast("فشل جلب بيانات اللوحة: " + response.message, "error");
             }
+        }
+
+        // Calculate and Render General Admin Dashboard Summary
+        function updateAdminGeneralSummary() {
+            if (!adminDashboardData || !adminDashboardData.schools) return;
+
+            const todayStr = getTodayDateString();
+            let totalStudentsAll = 0;
+            let totalAbsentToday = 0;
+
+            adminDashboardData.schools.forEach(school => {
+                totalStudentsAll += (Number(school.totalStudents) || 0);
+            });
+
+            if (adminDashboardData.attendanceRecords) {
+                adminDashboardData.attendanceRecords.forEach(record => {
+                    if (record.date === todayStr) {
+                        totalAbsentToday += (Number(record.absentCount) || 0);
+                    }
+                });
+            }
+
+            const totalPresentToday = Math.max(0, totalStudentsAll - totalAbsentToday);
+            const presentRate = totalStudentsAll > 0 ? ((totalPresentToday / totalStudentsAll) * 100).toFixed(1) : 0;
+            const absentRate = totalStudentsAll > 0 ? ((totalAbsentToday / totalStudentsAll) * 100).toFixed(1) : 0;
+
+            document.getElementById('dashTotalStudents').textContent = totalStudentsAll.toLocaleString('ar-EG');
+            document.getElementById('dashTotalPresent').textContent = totalPresentToday.toLocaleString('ar-EG');
+            document.getElementById('dashTotalAbsent').textContent = totalAbsentToday.toLocaleString('ar-EG');
+            document.getElementById('dashPresentRate').textContent = `${presentRate}%`;
+            document.getElementById('dashAbsentRate').textContent = `${absentRate}%`;
         }
 
         // Render Schools List in Admin View
